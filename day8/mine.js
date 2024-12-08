@@ -1,6 +1,6 @@
 // Today me and my friend Chris are solving the problem using the other person's idea. This is my idea
 import {input, mini} from './input.js'
-let start = Date.now()
+
 let board = input.split("\n").map(row => row.split(""))
 let total = 0
 let antennae = {}
@@ -50,23 +50,15 @@ for(let key in antennae) {
     let arr = antennae[key]
     for(let i = 0; i < arr.length; i++) {
         for(let j = i + 1; j < arr.length; j++) {
-            let range = findRange(board, arr[i], arr[j])
             let xDiff = arr[i].x - arr[j].x
             let yDiff = arr[i].y - arr[j].y
+            let range = findRange(board, arr[i], arr[j], xDiff, yDiff)
+
 
             for(let k = range[0]; k <= range[1]; k++){
-                if(k <= 0){
-                    if(!antinodes.has(`${arr[i].x - xDiff * k},${arr[i].y - yDiff * k}`)){
-                        total++
-                        antinodes.add(`${arr[i].x - xDiff * k},${arr[i].y - yDiff * k}`)
-                    }
-                }
-
-                if(k >= 0){
-                    if(!antinodes.has(`${arr[j].x - xDiff * k},${arr[j].y - yDiff * k}`)){
-                        total++
-                        antinodes.add(`${arr[j].x - xDiff * k},${arr[j].y - yDiff * k}`)
-                    }
+                if(!antinodes.has(`${arr[i].x - xDiff * k},${arr[i].y - yDiff * k}`)){
+                    total++
+                    antinodes.add(`${arr[i].x - xDiff * k},${arr[i].y - yDiff * k}`)
                 }
             }
         }
@@ -74,11 +66,8 @@ for(let key in antennae) {
 }
 
 console.log(total)
-console.log(Date.now() - start)
 
-function findRange(board, antenna1, antenna2){
-    let xDiff = antenna1.x - antenna2.x
-    let yDiff = antenna1.y - antenna2.y
+function findRange(board, antenna1, antenna2, xDiff, yDiff) {
     let minScale = 0
 
     while(isInBounds(board, antenna1.x - xDiff * minScale, antenna1.y - yDiff * minScale)){
@@ -91,7 +80,7 @@ function findRange(board, antenna1, antenna2){
         maxScale++
     }
 
-    return [minScale + 1, maxScale - 1]
+    return [minScale + 1, maxScale]
 }
 
 function isInBounds(board, x, y) {
